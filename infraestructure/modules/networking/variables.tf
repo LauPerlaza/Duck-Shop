@@ -19,5 +19,8 @@ variable "cidr_block_vpc" {
 variable "subnet_public" {
   type = list(string)
 }
+variable "subnet_private" {
+  type = list(string)
+}
 
 
