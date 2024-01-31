@@ -1,0 +1,51 @@
+name: Workflow Ducks Web Page
+
+on:
+  push:
+    branches:
+      - feature/*
+      - develop
+
+env:
+  ENVIRONMENT: "develop"
+  STATE_KEY: "Tfstate-ducks-server"
+
+jobs:
+  set-up-terraform-backend:
+    runs-on: ubuntu-latest
+        
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+              
+      - name: Configure AWS Credentials
+        id: config_aws_creds
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 
+      
+      - name: terraform-backend-set-up
+        uses: ./.github/actions/terraform-backend    
+
+      - name: Terraform-Init 
+        id: tf-init
+        run: |
+          export BUCKET_NAME="web-ducks-server-${ENVIRONMENT}"
+          export DYNAMODB_TABLE="dynamodb-ducks-${ENVIRONMENT}"
+          export AWS_REGION="us-east-1"
+          terraform init \
+          -backend-config="bucket=${BUCKET_NAME}" \
+          -backend-config="region=${AWS_REGION}" \
+          -backend-config="key=${STATE_KEY}" \
+          -backend-config="dynamodb_table=${DYNAMODB_TABLE}"
+            
+      - name: Terraform-Plan
+        id: tf-plan
+        run: |
+            terraform plan \
+            -input=false \
+            -var "region=${AWS_REGION}" \
+            -var "environment=${ENVIRONMENT}" \
+            -out tfplan
