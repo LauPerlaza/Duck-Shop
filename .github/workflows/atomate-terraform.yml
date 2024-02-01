@@ -46,6 +46,4 @@ jobs:
         run: |
             terraform plan \
             -input=false \
-            -var "region=${AWS_REGION}" \
-            -var "environment=${ENVIRONMENT}" \
             -out tfplan
