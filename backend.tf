@@ -1,10 +1,10 @@
 terraform {
 
   backend "s3" {
-    bucket = "${BUCKET_NAME}" #"web-ducks-server-develop"
-    key = "${STATE_KEY}" #"web-ducks-server-develop"
-    region = "${AWS_REGION}" #"us-east-1"
-    dynamodb_table = "${DYNAMODB_TABLE}" #"dynamodb-ducks-develop"
+    bucket = "${BUCKET_NAME}" 
+    key = "${STATE_KEY}" 
+    region = "${AWS_REGION}"
+    dynamodb_table = "${DYNAMODB_TABLE}"
     encrypt = true
    }
 }
