@@ -3,7 +3,6 @@ name: Workflow Ducks Web Page
 on:
   push:
     branches:
-      - feature/*
       - dev
 
 env:
