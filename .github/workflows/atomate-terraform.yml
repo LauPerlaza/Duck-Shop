@@ -31,7 +31,7 @@ jobs:
       - name: Terraform-Init 
         id: tf-init
         run: |
-          export BUCKET_NAME="web-ducks-server-${ENVIRONMENT}"
+          export BUCKET_NAME="tf-state-ducks-${ENVIRONMENT}"
           export DYNAMODB_TABLE="dynamodb-ducks-${ENVIRONMENT}"
           export AWS_REGION="us-east-1"
           terraform init \

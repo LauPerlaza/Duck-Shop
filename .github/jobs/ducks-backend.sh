@@ -2,7 +2,7 @@
 
 ENVIRONMENT=${ENVIRONMENT:-"develop"}
 
-BUCKET_NAME="web-ducks-server-$ENVIRONMENT"
+BUCKET_NAME="tf-state-ducks-$ENVIRONMENT"
 DYNAMODB_TABLE="dynamodb-ducks-$ENVIRONMENT"
 AWS_REGION="us-east-1"
 
