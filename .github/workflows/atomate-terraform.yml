@@ -8,6 +8,7 @@ on:
 env:
   ENVIRONMENT: "develop"
   STATE_KEY: "Tfstate-ducks-server"
+  ECR_REGISTRY_URI: "658299583140.dkr.ecr.us-east-1.amazonaws.com/duck-shop-0.1"
 
 jobs:
   set-up-terraform-backend:
@@ -46,3 +47,13 @@ jobs:
             terraform plan \
             -input=false \
             -out tfplan
+
+      - name: Build Docker Image
+        id: build-image
+        run: |
+          docker build -t ${{ env.ECR_REGISTRY_URI }}/my-app:${{ github.sha }} ./find_api
+          echo "::set-output name=image_uri::${{ env.ECR_REGISTRY_URI }}/my-app:${{ github.sha }}"
+    
+      - name: Push to AWS ECR
+        run: |
+          docker push ${{ steps.build-image.outputs.image_uri }}
