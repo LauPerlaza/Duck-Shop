@@ -1,4 +1,4 @@
-name: Workflow-Ducks-Shop
+name: Workflow-Ducks-Shop.
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
   STATE_KEY: "Tfstate-ducks-server"
   ECR_REGISTRY_URI: "658299583140.dkr.ecr.us-east-1.amazonaws.com/duck-shop-0.1"
   AWS_PROFILE: "AWS"
-  BUCKET_NAME: "tf-state-ducks"
+  BUCKET_NAME: "tf-state-ducks-develop"
 jobs:
   set-up-terraform-backend:
     runs-on: ubuntu-latest
