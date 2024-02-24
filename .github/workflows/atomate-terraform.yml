@@ -1,4 +1,4 @@
-name: Workflow Ducks Web Page
+name: Workflow-Ducks-Shop
 
 on:
   push:
@@ -9,7 +9,7 @@ env:
   ENVIRONMENT: "develop"
   STATE_KEY: "Tfstate-ducks-server"
   ECR_REGISTRY_URI: "658299583140.dkr.ecr.us-east-1.amazonaws.com/duck-shop-0.1"
-
+  AWS_PROFILE: "AWS"
 jobs:
   set-up-terraform-backend:
     runs-on: ubuntu-latest
@@ -54,6 +54,10 @@ jobs:
           docker build -t ${{ env.ECR_REGISTRY_URI }}/my-app:${{ github.sha }} ./find_api
           echo "::set-output name=image_uri::${{ env.ECR_REGISTRY_URI }}/my-app:${{ github.sha }}"
     
+      - name: Authenticate with AWS ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 --profile ${{ env.AWS_PROFILE }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY_URI }}
+      
       - name: Push to AWS ECR
         run: |
           docker push ${{ steps.build-image.outputs.image_uri }}
