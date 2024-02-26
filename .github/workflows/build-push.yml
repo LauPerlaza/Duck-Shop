@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - dev
-    
-    paths:
-        - 'find_api/**'
-
 env:
   ENVIRONMENT: "develop"
   ECR_REGISTRY_URI: "658299583140.dkr.ecr.us-east-1.amazonaws.com/duck-shop-0.1"
@@ -42,6 +38,6 @@ jobs:
           
       - name: Push to AWS ECR
         run: |
-          docker push ${{ env.ECR_REGISTRY_URI }}/duck-shop:${{ github.sha }} ./find_api
+          docker push ${{ env.ECR_REGISTRY_URI }}/duck-shop:${{ github.sha }}
 
           
