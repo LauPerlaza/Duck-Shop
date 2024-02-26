@@ -34,10 +34,9 @@ jobs:
       - name: Build Docker Image
         id: build-image
         run: |
-          docker build -t ${{ env.ECR_REGISTRY_URI }}/duck-shop:${{ github.sha }} ./find_api
-          
+           docker build -t ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }} ./find_api
+           
       - name: Push to AWS ECR
         run: |
-          docker push ${{ env.ECR_REGISTRY_URI }}/duck-shop:${{ github.sha }}
-
+           docker push ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }}
           
