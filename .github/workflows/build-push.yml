@@ -1,0 +1,42 @@
+name: workflow-build-app
+
+on:
+  push:
+    branches:
+      - dev
+
+env:
+  ENVIRONMENT: "develop"
+  STATE_KEY: "tfstate-ducks-server"
+  ECR_REGISTRY_URI: "658299583140.dkr.ecr.us-east-1.amazonaws.com/duck-shop-0.1"
+  BUCKET_NAME: "tf-state-ducks-develop"
+  AWS_REGION: "us-east-1"
+jobs:
+   set-up-terraform-backend:
+    runs-on: ubuntu-latest
+        
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+              
+      - name: Configure AWS Credentials
+        id: config_aws_creds
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 
+      
+      - name: terraform-backend-set-up
+        uses: ./.github/actions/terraform-backend    
+
+      - name: Build Docker Image
+        id: build-image
+        run: |
+          docker build -t ${{ env.ECR_REGISTRY_URI }}/duck-shop:${{ github.sha }} ./find_api
+          echo "::set-output name=image_uri::${{ env.ECR_REGISTRY_URI }}/duck-shop:${{ github.sha }}"
+
+      
+      - name: Push to AWS ECR
+        run: |
+          docker push ${{ steps.build-image.outputs.image_uri }}
