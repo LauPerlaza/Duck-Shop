@@ -44,5 +44,9 @@ jobs:
         id: tf-plan
         run: |
             terraform plan \
+            - var "bucket=${BUCKET_NAME}" \
+            - var "region=${AWS_REGION}" \
+            - var "key=${STATE_KEY}" \
+            - var "dynamodb_table=${DYNAMODB_TABLE}" \ 
             -input=false \
             -out tfplan
