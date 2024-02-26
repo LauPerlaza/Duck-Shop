@@ -39,8 +39,9 @@ jobs:
         id: build-image
         run: |
           docker build -t ${{ env.ECR_REGISTRY_URI }}/duck-shop:${{ github.sha }} ./find_api
-          echo "::set-output name=image_uri::${{ env.ECR_REGISTRY_URI }}/duck-shop:${{ github.sha }}"
-
+          
       - name: Push to AWS ECR
         run: |
-          docker push ${{ steps.build-image.outputs.image_uri }}
+          docker push ${{ env.ECR_REGISTRY_URI }}/duck-shop:${{ github.sha }} ./find_api
+
+          
