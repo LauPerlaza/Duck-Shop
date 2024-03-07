@@ -1,7 +1,7 @@
 # terraform code to create a task definition 
 
 resource "aws_ecs_task_definition" "task_definition" {
-  family                   = "task-definition-${var.task_name}"
+  family                   = "${var.task_name}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.cpu

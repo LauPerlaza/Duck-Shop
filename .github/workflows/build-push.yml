@@ -9,7 +9,9 @@ on:
       - 'docker/**'
 env:
   ENVIRONMENT: "develop"
-  ECR_REGISTRY_URI: "658299583140.dkr.ecr.us-east-1.amazonaws.com/duck-shop"
+  ECR_REGISTRY_URI: "658299583140.dkr.ecr.us-east-1.amazonaws.com/ecr_develop"
+  ECS_CLUSTER_NAME: "cluster_develop"
+  ECS_SERVICE_NAME: "task_def_develop"
   
 jobs:
    set-up-terraform-backend:
@@ -32,8 +34,7 @@ jobs:
 
       - name: Authenticate with AWS ECR
         run: |
-         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 658299583140.dkr.ecr.us-east-1.amazonaws.com
-      
+         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 658299583140.dkr.ecr.us-east-1.amazonaws.com      
       - name: Build Docker Image
         id: build-image
         run: |
@@ -42,4 +43,18 @@ jobs:
       - name: Push to AWS ECR
         run: |
            docker push ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }}
+
+      - name: Update ECS Service
+        run: |
+             aws ecs update-service --cluster ${{ env.ECS_CLUSTER_NAME }} --service ${{ env.ECS_SERVICE_NAME }} --task-definition ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }}
+             
+      - name: Validate ECS Task Definition
+        run: |
+           task_definition=$(aws ecs describe-services --cluster ${{ env.ECS_CLUSTER_NAME }} --services ${{ env.ECS_SERVICE_NAME }} --query 'services[0].taskDefinition' --output text)
+           image_from_task_definition=$(aws ecs describe-task-definition --task-definition $task_definition --query 'taskDefinition.containerDefinitions[0].image' --output text)
+           if [ "$image_from_task_definition" != "$ECR_REGISTRY_URI:${{ github.sha }}" ]; then
+              echo "Task Definition is not using the expected image."
+               exit 1
+           fi
+           echo "Task Definition is using the expected image."    
           
