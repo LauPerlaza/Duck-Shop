@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - dev
+    paths:
+      - 'find_api/**'
+      - 'docker/**'
+    
 
 env:
   ENVIRONMENT: "develop"
