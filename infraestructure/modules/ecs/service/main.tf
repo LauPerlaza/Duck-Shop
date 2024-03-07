@@ -1,5 +1,4 @@
 #   #   AWS SECURITY GROUP ECS  #   #
-
 resource "aws_security_group" "ecs_sg" {
   name   = "ecs-sg"
   vpc_id = var.vpc_id
@@ -20,6 +19,7 @@ resource "aws_security_group" "ecs_sg" {
   }
 }
 
+#   #   AWS ECS SERVICE  #   #
 resource "aws_ecs_service" "ecs_service" {
   name                              = var.service_name
   cluster                           = var.ecs_cluster_id
