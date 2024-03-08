@@ -34,19 +34,29 @@ jobs:
 
       - name: Authenticate with AWS ECR
         run: |
-         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 658299583140.dkr.ecr.us-east-1.amazonaws.com      
+         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 658299583140.dkr.ecr.us-east-1.amazonaws.com 
+      
+      # utiliza la imagen de hadolint para verificar la calidad del Dockerfile
+      - name: Docker lint
+        run: |
+         docker run --rm -i hadolint/hadolint < ./docker/Dockerfile
+    
       - name: Build Docker Image
         id: build-image
         run: |
            docker build -t ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }} ./find_api
-           
+       
+      - name: Docker tag
+        run: |
+           docker tag ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }}:latest
+                 
       - name: Push to AWS ECR
         run: |
            docker push ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }}
 
       - name: Update ECS Service
         run: |
-             aws ecs update-service --cluster ${{ env.ECS_CLUSTER_NAME }} --service ${{ env.ECS_SERVICE_NAME }} --task-definition ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }}
+            aws ecs update-service --cluster ${{ env.ECS_CLUSTER_NAME }} --service ${{ env.ECS_SERVICE_NAME }} --task-definition ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }}
              
       - name: Validate ECS Task Definition
         run: |
