@@ -31,7 +31,7 @@ module "ecs_task_definition" {
   arn_role       = module.ecs_role.arn_role
   cpu            = 512
   memory         = "1024"
-  registry       = module.aws_ecr.ecr_arn
+  registry       = module.aws_ecr.ecr_uri
   region         = var.region
   container_port = 5000
 }
