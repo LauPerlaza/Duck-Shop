@@ -6,7 +6,7 @@ WORKDIR /app
 COPY list_ec2.py .
 COPY .env .
 
-# Instala las dependencias del código.
+# Instala las dependencias del código
 RUN pip install boto3 python-dotenv
 
 # Comando a ejecutar cuando se inicie el contenedor.
