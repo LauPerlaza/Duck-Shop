@@ -9,7 +9,7 @@ on:
       - 'docker/**'
 env:
   ENVIRONMENT: "develop"
-  ECR_REGISTRY_URI: "658299583140.dkr.ecr.us-east-1.amazonaws.com/ecr_develop"
+  ECR_REGISTRY_URI: "658299583140.dkr.ecr.us-east-1.amazonaws.com/ecr-develop"
   ECS_CLUSTER_NAME: "cluster_develop"
   ECS_SERVICE_NAME: "task_def_develop"
   
@@ -34,8 +34,7 @@ jobs:
 
       - name: Authenticate with AWS ECR
         run: |
-         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 658299583140.dkr.ecr.us-east-1.amazonaws.com 
-    
+           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 658299583140.dkr.ecr.us-east-1.amazonaws.com    
       - name: Build Docker Image
         id: build-image
         run: |
