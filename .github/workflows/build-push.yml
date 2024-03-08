@@ -43,11 +43,11 @@ jobs:
        
       - name: Docker tag
         run: |
-           docker tag ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }}:latest
+           docker tag ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }} ${{ env.ECR_REGISTRY_URI }}:latest
                  
       - name: Push to AWS ECR
         run: |
-           docker push ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }}
+           docker push ${{ env.ECR_REGISTRY_URI }}:latest
 
       - name: Update ECS Service
         run: |
@@ -55,11 +55,11 @@ jobs:
              
       - name: Validate ECS Task Definition
         run: |
-           task_definition=$(aws ecs describe-services --cluster ${{ env.ECS_CLUSTER_NAME }} --services ${{ env.ECS_SERVICE_NAME }} --query 'services[0].taskDefinition' --output text)
-           image_from_task_definition=$(aws ecs describe-task-definition --task-definition $task_definition --query 'taskDefinition.containerDefinitions[0].image' --output text)
-           if [ "$image_from_task_definition" != "$ECR_REGISTRY_URI:${{ github.sha }}" ]; then
-              echo "Task Definition is not using the expected image."
-               exit 1
-           fi
-           echo "Task Definition is using the expected image."    
+              task_definition=$(aws ecs describe-services --cluster ${{ env.ECS_CLUSTER_NAME }} --services ${{ env.ECS_SERVICE_NAME }} --query 'services[0].taskDefinition' --output text)
+              image_from_task_definition=$(aws ecs describe-task-definition --task-definition $task_definition --query 'taskDefinition.containerDefinitions[0].image' --output text)
+              if [ "$image_from_task_definition" != "$ECR_REGISTRY_URI:latest" ]; then
+                echo "Task Definition is not using the expected image."
+                exit 1
+              fi
+              echo "Task Definition is using the expected image."
           
