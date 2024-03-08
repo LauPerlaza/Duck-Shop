@@ -22,7 +22,9 @@ variable "subnet_ids" {
   description = "Subnet ID in which ecs will deploy the tasks"
   type        = list(string)
 }
-variable "vpc_id" {
-  description = "vpc id"
+
+variable "arn_security_group" {
+  description = "ARN of the security group for the tasks"
   type        = string
 }
+

@@ -20,8 +20,8 @@ variable "task_role" {
   description = "the IAM ARN role that ecs task will use to call antoher services in AWS"
   type        = string
 }
-variable "registry" {
-  description = "images regristry"
+variable "docker_repo" {
+  description = "Docker images"
   type        = string
 }
 variable "container_port" {

@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "task_definition" {
 [
   {
     "cpu": 0,
-    "image": "${var.registry}",
+    "image": "${var.docker_repo}",
     "name": "Container-${var.task_name}",
     "networkMode": "awsvpc",
     "portMappings": [
