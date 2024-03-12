@@ -29,14 +29,4 @@ variable "container_port" {
   type        = string
 }
 
-variable "region" {
-  description = "Region in which the resources will be deployed"
-  type        = string
-  default     = "us-east-1"
-}
-variable "env" {
-  type    = string
-  default = "develop"
-}
-
 

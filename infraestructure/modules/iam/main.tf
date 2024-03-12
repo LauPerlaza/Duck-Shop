@@ -1,7 +1,7 @@
 # Terraform Module to create IAM Role and Policy
 # ECS Role Creation For ECS
 
-resource "aws_iam_role" "ecs_role" {
+resource "aws_iam_role" "ecsTaskExecutionRole" {
   name               = "${var.name}"
   assume_role_policy = <<EOF
 {
@@ -19,7 +19,7 @@ resource "aws_iam_role" "ecs_role" {
 }
 EOF
   tags = {
-    Name = "ECS-ROLE-${var.name}"
+    Name = "${var.name}"
   }
   lifecycle {
     create_before_destroy = true
@@ -27,9 +27,9 @@ EOF
 }
 
 # Attachment of the policy to the IAM role
-resource "aws_iam_role_policy_attachment" "attachment_to_role" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
-  role       = aws_iam_role.ecs_role.name
+resource "aws_iam_role_policy_attachment" "attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  role       = aws_iam_role.ecsTaskExecutionRole.name
 
   lifecycle {
     create_before_destroy = true
