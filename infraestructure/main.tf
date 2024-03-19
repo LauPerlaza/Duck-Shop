@@ -10,38 +10,54 @@ module "networking" {
   subnet_private = ["10.0.3.0/24", "10.0.4.0/24"]
 }
 
-module "aws_ecr" {
-  source = "./modules/ecr"
-  ecr_name   = "ecr_${var.env}"
-}
-
 module "ecs_role" {
   source    = "./modules/iam"
-  role_name = "ecs_role_${var.env}"
+  name = "ecsTaskExecutionRole_${var.env}"
+}
+
+resource "aws_ecr_repository" "ecr_repo" {
+  name                 = "ecr-${var.env}"
+  image_tag_mutability = "MUTABLE"
 }
 
 resource "aws_ecs_cluster" "cluster" {
   name = "cluster_${var.env}"
 }
 
+### Security group for ECS Tasks
+resource "aws_security_group" "sg_ecs_tasks" {
+  name        = "sg_ecs_${var.env}"
+  description = "controls access to the ecs tasks"
+  vpc_id      = module.networking.vpc_id
+  tags = {
+    Name = "sg_ecs_${var.env}"
+  }
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "http"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+
 module "ecs_task_definition" {
+  depends_on     = [aws_ecr_repository.ecr_repo]
   source         = "./modules/ecs/taskdefinition"
   task_name      = "task_def_${var.env}"
   task_role      = module.ecs_role.arn_role
   arn_role       = module.ecs_role.arn_role
   cpu            = 512
   memory         = "1024"
-  registry       = module.aws_ecr.ecr_arn
-  region         = var.region
+  docker_repo    = aws_ecr_repository.ecr_repo.repository_url
   container_port = 5000
-}
-
-module "aws_ecs_service" {
-  source              = "./modules/ecs/service"
-  service_name        = "ecs_service_${var.env}"
-  ecs_cluster_id      = aws_ecs_cluster.cluster.id
-  arn_task_definition = module.ecs_task_definition.arn_task_definition
-  desired_tasks       = 1
-  vpc_id              = module.networking.vpc_id
-  subnet_ids          = [module.networking.sub_pub_1, module.networking.sub_pub_2]
+  region         = "us-east-1"
 }
