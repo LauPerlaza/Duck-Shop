@@ -41,9 +41,4 @@ jobs:
           docker push $ECR_REGISTRY_URI:${IMAGE_TAG}
           docker tag $ECR_REGISTRY_URI:${IMAGE_TAG} $ECR_REGISTRY_URI:latest
           docker push $ECR_REGISTRY_URI:latest
-
-      - name: Update ECS Service
-        run: |
-          aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $ECS_SERVICE_NAME --force-new-deployment
-
           
