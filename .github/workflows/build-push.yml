@@ -7,48 +7,38 @@ on:
     paths:
       - 'find_api/**'
       - 'docker/**'
+
 env:
   ENVIRONMENT: "develop"
   ECR_REGISTRY_URI: "658299583140.dkr.ecr.us-east-1.amazonaws.com/ecr-develop"
   ECS_CLUSTER_NAME: "cluster_develop"
   ECS_SERVICE_NAME: "task_def_develop"
-  
+
 jobs:
-   set-up-terraform-backend:
+  build-and-deploy:
     runs-on: ubuntu-latest
-        
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-              
+
       - name: Configure AWS Credentials
-        id: config_aws_creds
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 
-      
-      - name: terraform-backend-set-up
-        uses: ./.github/actions/terraform-backend    
+          aws-region: us-east-1
 
       - name: Authenticate with AWS ECR
         run: |
-           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 658299583140.dkr.ecr.us-east-1.amazonaws.com    
-      - name: Build Docker Image
-        id: build-image
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 658299583140.dkr.ecr.us-east-1.amazonaws.com
+      
+      - name: Build and Push Docker Image
+        env:
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-           docker build -t ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }} ./find_api
-       
-      - name: Docker tag
-        run: |
-           docker tag ${{ env.ECR_REGISTRY_URI }}:${{ github.sha }} ${{ env.ECR_REGISTRY_URI }}:latest
-                 
-      - name: Push to AWS ECR
-        run: |
-           docker push ${{ env.ECR_REGISTRY_URI }}:latest
-
-     
-           
-             
+          docker build -t $ECR_REGISTRY_URI:${IMAGE_TAG} ./find_api
+          docker push $ECR_REGISTRY_URI:${IMAGE_TAG}
+          docker tag $ECR_REGISTRY_URI:${IMAGE_TAG} $ECR_REGISTRY_URI:latest
+          docker push $ECR_REGISTRY_URI:latest
           
