@@ -38,6 +38,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY_URI:${IMAGE_TAG} ./find_api
+          docker push $ECR_REGISTRY_URI:${IMAGE_TAG}
           docker tag $ECR_REGISTRY_URI:${IMAGE_TAG} $ECR_REGISTRY_URI:latest
           docker push $ECR_REGISTRY_URI:latest
 
