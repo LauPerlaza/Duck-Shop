@@ -29,4 +29,11 @@ variable "container_port" {
   type        = string
 }
 
+ variable "region" {
+  description = "Aws Region"
+  type        = string
+  default     = "us-east-1"  
+ }
+
+
 

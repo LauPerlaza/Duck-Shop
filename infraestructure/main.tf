@@ -59,4 +59,5 @@ module "ecs_task_definition" {
   memory         = "1024"
   docker_repo    = aws_ecr_repository.ecr_repo.repository_url
   container_port = 5000
+  region         = "us-east-1"
 }
