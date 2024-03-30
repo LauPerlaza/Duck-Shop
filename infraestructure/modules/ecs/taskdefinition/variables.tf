@@ -26,7 +26,7 @@ variable "docker_repo" {
 }
 variable "container_port" {
   description = "container_port"
-  type        = string
+  type        = number
 }
 
  variable "region" {
