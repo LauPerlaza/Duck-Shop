@@ -10,7 +10,8 @@ load_dotenv()
 ec2_client = boto3.client(
     'ec2',
     aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+    region_name="us-west-2"
 )
 
 # Obtiene la lista de todas las VPCs
@@ -47,7 +48,3 @@ ec2 = boto3.client('ec2')
 response = ec2.describe_availability_zones()
 print('Availability Zones:', response['AvailabilityZones'])
 
-# Obtiene la lista de clústeres de ECS
-ecs_client = boto3.client('ecs')
-clusters = ecs_client.list_clusters()
-print('Lista de clústeres de ECS:', clusters['clusterArns'])
