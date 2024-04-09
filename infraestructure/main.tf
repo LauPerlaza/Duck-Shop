@@ -11,8 +11,9 @@ module "networking" {
 }
 
 module "ecs_role" {
-  source    = "./modules/iam"
-  name = "ecsTaskExecutionRole_${var.env}"
+  source      = "./modules/iam"
+  name_role   = "ecsTaskExecutionRole_${var.env}"
+  name_policy = "EC2VPCReadOnly_${var.env}"
 }
 
 resource "aws_ecr_repository" "ecr_repo" {
@@ -20,11 +21,26 @@ resource "aws_ecr_repository" "ecr_repo" {
   image_tag_mutability = "MUTABLE"
 }
 
+# AWS ECR CLUSTER
 resource "aws_ecs_cluster" "cluster" {
   name = "cluster_${var.env}"
 }
 
-### Security group for ECS Tasks
+# AWS ECS SERVICE
+resource "aws_ecs_service" "ecs_service" {
+  name            = "ecs_service"
+  cluster         = aws_ecs_cluster.cluster.arn
+  task_definition = module.ecs_task_definition.task_definition_arn
+
+  network_configuration {
+    subnets          = [module.networking.sub_priv_1, module.networking.sub_priv_2]
+    security_groups  = [aws_security_group.sg_ecs_tasks.id]
+    assign_public_ip = "false"
+  }
+
+}
+
+# Security group for ECS Tasks
 resource "aws_security_group" "sg_ecs_tasks" {
   name        = "sg_ecs_${var.env}"
   description = "controls access to the ecs tasks"
@@ -47,7 +63,6 @@ resource "aws_security_group" "sg_ecs_tasks" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
 
 module "ecs_task_definition" {
   depends_on     = [aws_ecr_repository.ecr_repo]

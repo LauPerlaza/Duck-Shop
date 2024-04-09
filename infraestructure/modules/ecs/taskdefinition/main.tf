@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "task_definition" {
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/TaskDF-${var.task_name}",
+          "awslogs-group": "ecs/TaskDF-${var.task_name}",
           "awslogs-region": var.region,
           "awslogs-create-group": "true",    
           "awslogs-stream-prefix": "ecs"

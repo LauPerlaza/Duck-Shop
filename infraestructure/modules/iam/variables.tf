@@ -1,4 +1,4 @@
-variable "name" {
+variable "name_role" {
   description = "Name for the IAM Role"
   type        = string
 }
@@ -13,4 +13,9 @@ variable "policy" {
   description = "a json with the policy"
   type        = string
   default     = ""
+}
+
+variable "name_policy" {
+  description = "Name for the Policy"
+  type        = string
 }
