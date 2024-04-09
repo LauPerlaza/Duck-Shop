@@ -28,8 +28,8 @@ resource "aws_ecs_cluster" "cluster" {
 
 # AWS ECS SERVICE
 resource "aws_ecs_service" "ecs_service" {
-  name = "ecs_service"
-  cluster = aws_ecs_cluster.cluster.arn
+  name            = "ecs_service"
+  cluster         = aws_ecs_cluster.cluster.arn
   task_definition = module.ecs_task_definition.task_definition_arn
 
   network_configuration {
@@ -37,7 +37,7 @@ resource "aws_ecs_service" "ecs_service" {
     security_groups  = [aws_security_group.sg_ecs_tasks.id]
     assign_public_ip = "false"
   }
-  
+
 }
 
 # Security group for ECS Tasks
