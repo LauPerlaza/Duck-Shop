@@ -9,4 +9,4 @@ COPY list_ec2.py .
 RUN pip install boto3 python-dotenv
 
 # Comando a ejecutar cuando se inicie el contenedor.
-CMD ["python", "list_ec2.py"]
+CMD ["python", "list_vpc.py"]
