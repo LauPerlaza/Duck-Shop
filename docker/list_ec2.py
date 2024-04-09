@@ -1,18 +1,8 @@
 import boto3
-from dotenv import load_dotenv
-import os
 
-# Carga las variables de entorno desde el archivo .env
-load_dotenv()
+# Crea el cliente de EC2 sin especificar las credenciales
 
-# Crea el cliente de EC2 usando las credenciales de las variables de entorno
-# Utiliza las del usuario que creó en IAM
-ec2_client = boto3.client(
-    'ec2',
-    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
-    region_name="us-west-2"
-)
+ec2_client = boto3.client('ec2', region_name="us-west-1")
 
 # Obtiene la lista de todas las VPCs
 vpcs_response = ec2_client.describe_vpcs()
@@ -23,7 +13,6 @@ print("Lista de VPCs disponibles:")
 for vpc in vpcs:
     print("VPC ID:", vpc['VpcId'])
     print("CIDR Block:", vpc['CidrBlock'])
-    print("------------------------------------------")
 
 # Solicita al usuario que ingrese la ID de la VPC que desea listar instancias
 vpc_id = input("Ingrese la ID de la VPC que desea listar instancias: ")
