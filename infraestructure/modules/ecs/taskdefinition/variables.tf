@@ -11,7 +11,7 @@ variable "memory" {
   type        = string
 }
 
-variable "arn_role" {
+variable "execution_role" {
   description = "the IAM ARN role that ecs task will use to call antoher services in AWS"
   type        = string
 }

@@ -12,8 +12,8 @@ module "networking" {
 
 module "ecs_role" {
   source      = "./modules/iam"
-  name_role   = "ecsTaskExecutionRole_${var.env}"
-  name_policy = "EC2VPCReadOnly_${var.env}"
+  name_role   = "ducks-${var.env}"
+  
 }
 
 resource "aws_ecr_repository" "ecr_repo" {
@@ -23,7 +23,7 @@ resource "aws_ecr_repository" "ecr_repo" {
 
 # AWS ECR CLUSTER
 resource "aws_ecs_cluster" "cluster" {
-  name = "cluster_${var.env}"
+  name = "cluster-${var.env}"
 }
 
 # AWS ECS SERVICE
@@ -69,7 +69,7 @@ module "ecs_task_definition" {
   source         = "./modules/ecs/taskdefinition"
   task_name      = "task_def_${var.env}"
   task_role      = module.ecs_role.arn_role
-  arn_role       = module.ecs_role.arn_role
+  execution_role = module.ecs_role.arn_executionrole
   cpu            = 512
   memory         = "1024"
   docker_repo    = aws_ecr_repository.ecr_repo.repository_url

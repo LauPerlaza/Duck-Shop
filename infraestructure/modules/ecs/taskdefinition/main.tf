@@ -6,7 +6,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.cpu
   memory                   = var.memory
-  execution_role_arn       = var.arn_role
+  execution_role_arn       = var.execution_role
   task_role_arn            = var.task_role
   container_definitions    = jsonencode([
     {

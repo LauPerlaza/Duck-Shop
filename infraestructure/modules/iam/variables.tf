@@ -9,13 +9,3 @@ variable "attach_to" {
   default     = ""
 }
 
-variable "policy" {
-  description = "a json with the policy"
-  type        = string
-  default     = ""
-}
-
-variable "name_policy" {
-  description = "Name for the Policy"
-  type        = string
-}
