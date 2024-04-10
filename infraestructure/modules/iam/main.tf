@@ -26,43 +26,6 @@ EOF
   }
 }
 
-# Attachment of the policy to the IAM role
-resource "aws_iam_role_policy_attachment" "TaskExecutionRole" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-  role       = aws_iam_role.ecsTaskExecutionRole.name
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# 
-resource "aws_iam_role" "TaskRole" {
-  name               = "task-role-${var.name_role}"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-  tags = {
-    Name = "task-role-${var.name_role}"
-  }
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-
 # Custom ReadOnly Policy for Ec2 and VPC
 resource "aws_iam_policy" "vpc_read_only_policy" {
   name        = "policy-${var.name_role}"
@@ -93,10 +56,21 @@ resource "aws_iam_policy" "vpc_read_only_policy" {
   })
 }
 
+# Attachment of the policy to the IAM role
+resource "aws_iam_role_policy_attachment" "TaskExecutionRole" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  role       = aws_iam_role.ecsTaskExecutionRole.name
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+
 # Attachment of the EC2 and VPC ReadOnly Policy to the IAM Role
 resource "aws_iam_role_policy_attachment" "vpc_read_only_policy_attachment" {
   policy_arn = aws_iam_policy.vpc_read_only_policy.arn
-  role = aws_iam_role.TaskRole.name
+  role = aws_iam_role.ecsTaskExecutionRole.name
 
   lifecycle {
     create_before_destroy = true

@@ -68,7 +68,6 @@ module "ecs_task_definition" {
   depends_on     = [aws_ecr_repository.ecr_repo]
   source         = "./modules/ecs/taskdefinition"
   task_name      = "task_def_${var.env}"
-  task_role      = module.ecs_role.arn_role
   execution_role = module.ecs_role.arn_executionrole
   cpu            = 512
   memory         = "1024"
