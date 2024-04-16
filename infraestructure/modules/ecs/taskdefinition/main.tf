@@ -6,8 +6,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.cpu
   memory                   = var.memory
-  execution_role_arn       = var.arn_role
-  task_role_arn            = var.task_role
+  execution_role_arn       = var.execution_role
   container_definitions    = jsonencode([
     {
       "cpu": 0,
@@ -23,7 +22,7 @@ resource "aws_ecs_task_definition" "task_definition" {
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "ecs/TaskDF-${var.task_name}",
+          "awslogs-group": "/ecs/TaskDF-${var.task_name}",
           "awslogs-region": var.region,
           "awslogs-create-group": "true",    
           "awslogs-stream-prefix": "ecs"
