@@ -75,3 +75,9 @@ module "ecs_task_definition" {
   container_port = 5000
   region         = "us-east-1"
 }
+
+module "kms_secret_manager" {
+  source = "./modules/secret-manager"
+  name = "secretsm_${var.env}"
+
+}
