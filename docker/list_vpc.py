@@ -9,6 +9,8 @@ aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'))
 # Obtiene el valor secreto 
 secret_value = client.get_secret_value(SecretId='mi-secret')['SecretString']
 
+# Imprime el valor secreto
+print(secret_value)
 
 
 #////

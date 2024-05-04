@@ -37,7 +37,8 @@ resource "aws_iam_policy" "get_secrets_policy" {
      {
        "Effect": "Allow",
        "Action": [
-         "secretsmanager:GetSecretValue"
+         "secretsmanager:GetSecretValue",
+         "kms:Descrypt"
       ],
       "Resource": [
         "*"
