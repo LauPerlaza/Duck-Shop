@@ -1,5 +1,11 @@
-#   # Networking resources creation   #   # #
+# # Random string # #
 
+resource "random_string" "random_name" {
+  length  = 8
+  special = false
+}
+
+#   # Networking resources creation   #   # #
 module "networking" {
   source         = "./modules/networking"
   ip             = "186.86.52.118/32"
@@ -78,6 +84,6 @@ module "ecs_task_definition" {
 
 module "kms_secret_manager" {
   source = "./modules/secret-manager"
-  name = "secretsm_${var.env}"
-
+  name = "secretsm_lab_${var.env}__${random_string.random_name.result}"
+  
 }

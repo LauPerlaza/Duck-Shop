@@ -13,7 +13,7 @@ secret_value = client.get_secret_value(SecretId='mi-secret')['SecretString']
 print(secret_value)
 
 
-#////
+#
 # Crea el cliente de EC2 sin especificar las credenciales
 #ec2_client = boto3.client('ec2', region_name="us-west-1")
 
