@@ -1,5 +1,11 @@
-#   # Networking resources creation   #   # #
+# # Random string # #
 
+resource "random_string" "random_name" {
+  length  = 8
+  special = false
+}
+
+#   # Networking resources creation   #   # #
 module "networking" {
   source         = "./modules/networking"
   ip             = "186.86.52.118/32"
@@ -74,4 +80,10 @@ module "ecs_task_definition" {
   docker_repo    = aws_ecr_repository.ecr_repo.repository_url
   container_port = 5000
   region         = "us-east-1"
+}
+
+module "kms_secret_manager" {
+  source = "./modules/secret-manager"
+  name = "secretsm_lab_${var.env}__${random_string.random_name.result}"
+  
 }
